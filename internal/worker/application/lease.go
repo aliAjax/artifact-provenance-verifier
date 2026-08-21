@@ -15,9 +15,18 @@ func (j LeaseJob) Run(ctx context.Context) error {
 	if !j.Store.Acquire(ctx, j.ID, j.Owner) {
 		return nil
 	}
-	defer j.Store.Release(ctx, j.ID)
+	defer j.Store.ReleaseOwned(ctx, j.ID, j.Owner)
 	if j.RunFunc == nil {
 		return nil
 	}
-	return j.RunFunc(ctx)
+	go func() { _ = j.RunFunc(ctx) }()
+	return nil
+}
+
+func (j LeaseJob) Wait(ctx context.Context) error {
+	if j.RunFunc == nil {
+		return nil
+	}
+	go func() { _ = j.RunFunc(ctx) }()
+	return nil
 }
