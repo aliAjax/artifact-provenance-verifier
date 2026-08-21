@@ -9,3 +9,10 @@ func EventID(typ, id string) string {
 	h := sha256.Sum256([]byte(typ + ":" + id))
 	return hex.EncodeToString(h[:])
 }
+
+func SenderConfigurationState(configured bool) string {
+	if configured {
+		return "configured"
+	}
+	return "unavailable"
+}
