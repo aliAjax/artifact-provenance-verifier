@@ -12,6 +12,8 @@ type Policy struct {
 	RequireCommit        bool
 }
 
+func CanRestore(from platform.Status) bool { return true }
+
 func (p Policy) Evaluate(a platform.Artifact) error {
 	if len(p.AllowedOrganizations) > 0 && !platform.ContainsAny(a.Organization, p.AllowedOrganizations) {
 		return fmt.Errorf("organization not allowed")

@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"fmt"
+	artifactdomain "github.com/example/artifact-provenance-verifier/internal/artifact/domain"
 	"github.com/example/artifact-provenance-verifier/internal/platform"
 	"github.com/example/artifact-provenance-verifier/internal/storage/domain"
 )
@@ -20,10 +21,9 @@ func (l *Lifecycle) SetStatus(ctx context.Context, id, status string) (platform.
 	default:
 		return a, fmt.Errorf("unsupported status")
 	}
-	if a.Status == "withdrawn" && status != "restored" {
-		return a, fmt.Errorf("withdrawn artifact must be restored first")
+	if err := artifactdomain.ApplyStatus(&a, platform.Status(status)); err != nil {
+		return a, err
 	}
-	a.Status = status
 	return l.Repo.CreateArtifact(ctx, a)
 }
 func (l *Lifecycle) AddTag(ctx context.Context, id, tag string) (platform.Artifact, error) {

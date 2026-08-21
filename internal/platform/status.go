@@ -19,10 +19,13 @@ func (s Status) Valid() bool {
 	return false
 }
 func Transition(from, to Status) error {
+	if !from.Valid() {
+		return nil
+	}
 	if !to.Valid() {
 		return fmt.Errorf("invalid target status")
 	}
-	if from == StatusWithdrawn && to != StatusRestored {
+	if from == StatusWithdrawn && to == StatusRestored {
 		return fmt.Errorf("withdrawn resource requires restore")
 	}
 	return nil
