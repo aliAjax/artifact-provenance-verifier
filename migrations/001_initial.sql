@@ -1,0 +1,7 @@
+CREATE TABLE artifacts (id TEXT PRIMARY KEY, organization TEXT NOT NULL, repository TEXT NOT NULL, name TEXT NOT NULL, digest TEXT NOT NULL UNIQUE, algorithm TEXT NOT NULL, architecture TEXT, version TEXT, commit_sha TEXT, status TEXT NOT NULL, built_at TIMESTAMPTZ NOT NULL, tags JSONB NOT NULL DEFAULT '[]');
+CREATE TABLE attestations (id TEXT PRIMARY KEY, artifact_id TEXT NOT NULL REFERENCES artifacts(id), type TEXT NOT NULL, subject TEXT NOT NULL, predicate_type TEXT NOT NULL, body_digest TEXT NOT NULL, signature TEXT, status TEXT NOT NULL, predicate JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL, UNIQUE(artifact_id,body_digest));
+CREATE TABLE sboms (id TEXT PRIMARY KEY, artifact_id TEXT NOT NULL REFERENCES artifacts(id), format TEXT NOT NULL, serial TEXT, digest TEXT NOT NULL, document JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL, UNIQUE(artifact_id,digest));
+CREATE TABLE vulnerabilities (id TEXT PRIMARY KEY, identifier TEXT NOT NULL UNIQUE, package_pattern TEXT NOT NULL, affected_range TEXT, fixed_version TEXT, severity TEXT NOT NULL, withdrawn BOOLEAN NOT NULL DEFAULT FALSE, updated_at TIMESTAMPTZ NOT NULL);
+CREATE TABLE verifications (id TEXT PRIMARY KEY, artifact_id TEXT NOT NULL REFERENCES artifacts(id), input_digest TEXT NOT NULL, conclusion TEXT NOT NULL, rule_version TEXT NOT NULL, checks JSONB NOT NULL, created_at TIMESTAMPTZ NOT NULL, UNIQUE(artifact_id,input_digest));
+CREATE INDEX vulnerabilities_package_idx ON vulnerabilities(package_pattern);
+CREATE INDEX attestations_artifact_idx ON attestations(artifact_id);

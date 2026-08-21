@@ -1,0 +1,10 @@
+openapi: 3.0.3
+info:
+  title: Artifact Provenance Verifier
+  version: 1.0.0
+paths:
+  /v1/artifacts: {post: {summary: Register artifact}, get: {summary: List artifacts}}
+  /v1/artifacts/{id}/attestations: {post: {summary: Submit attestation}}
+  /v1/artifacts/{id}/sboms: {post: {summary: Submit SBOM}}
+  /v1/vulnerabilities: {post: {summary: Import vulnerability}}
+  /v1/verifications: {post: {summary: Run verification}}

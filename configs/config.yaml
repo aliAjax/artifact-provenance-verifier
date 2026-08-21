@@ -1,0 +1,6 @@
+http_addr: ":8092"
+api_key: "dev-secret"
+database_url: "memory://"
+max_body: 4194304
+request_timeout: 10s
+worker_interval: 30s
