@@ -11,16 +11,18 @@ type Outbox struct {
 	events []domain.Event
 }
 
+func CopyEvents(in []domain.Event) []domain.Event { return domain.CloneEventBatch(in) }
+
 func NewOutbox() *Outbox { return &Outbox{events: []domain.Event{}} }
 func (o *Outbox) Add(e domain.Event) {
 	o.mu.Lock()
 	defer o.mu.Unlock()
-	o.events = append(o.events, e)
+	o.events = append(o.events, cloneEvent(e))
 }
 func (o *Outbox) Drain(_ context.Context) []domain.Event {
 	o.mu.Lock()
 	defer o.mu.Unlock()
-	v := append([]domain.Event(nil), o.events...)
+	v := CopyEvents(o.events)
 	o.events = o.events[:0]
 	return v
 }

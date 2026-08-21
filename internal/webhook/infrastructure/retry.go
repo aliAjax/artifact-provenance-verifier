@@ -1,6 +1,9 @@
 package infrastructure
 
-import "time"
+import (
+	"github.com/example/artifact-provenance-verifier/internal/webhook/domain"
+	"time"
+)
 
 func Backoff(attempt int) time.Duration {
 	if attempt < 1 {
@@ -11,3 +14,5 @@ func Backoff(attempt int) time.Duration {
 	}
 	return time.Duration(1<<attempt) * 100 * time.Millisecond
 }
+
+func CopyEvents(in []domain.Event) []domain.Event { return append([]domain.Event(nil), in...) }
