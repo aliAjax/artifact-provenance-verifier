@@ -79,6 +79,9 @@ type Verification struct {
 	Reused      bool          `json:"reused,omitempty"`
 }
 
+func CloneCheckResult(c CheckResult) CheckResult { return c }
+func CloneVerification(v Verification) Verification { return v }
+
 func NormalizeDigest(v string) (string, error) {
 	v = strings.TrimSpace(strings.ToLower(v))
 	if !strings.Contains(v, ":") {

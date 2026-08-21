@@ -1,6 +1,9 @@
 package application
 
-import "context"
+import (
+	"context"
+	"github.com/example/artifact-provenance-verifier/internal/platform"
+)
 
 func (s *Service) Summary(ctx context.Context, id, digest string) (map[string]any, error) {
 	v, e := s.Repo.FindVerification(ctx, id, digest)
@@ -19,3 +22,5 @@ func (s *Service) Summary(ctx context.Context, id, digest string) (map[string]an
 	}
 	return map[string]any{"id": v.ID, "conclusion": v.Conclusion, "passed": passed, "failed": failed, "reused": v.Reused}, nil
 }
+
+func CacheSummaryChecks(v platform.Verification) int { return len(v.Checks) }
