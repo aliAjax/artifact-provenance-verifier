@@ -23,6 +23,19 @@ type Artifact struct {
 	BuiltAt      time.Time `json:"built_at,omitempty"`
 	Tags         []string  `json:"tags,omitempty"`
 }
+
+func (a Artifact) Clone() Artifact {
+	a.Tags = append([]string(nil), a.Tags...)
+	return a
+}
+
+func (a Attestation) Clone() Attestation {
+	if a.Predicate != nil {
+		a.Predicate = MergeMaps(a.Predicate, nil)
+	}
+	return a
+}
+
 type Attestation struct {
 	ID            string         `json:"id,omitempty"`
 	ArtifactID    string         `json:"artifact_id,omitempty"`
