@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/example/artifact-provenance-verifier/internal/artifact/application"
 	attapp "github.com/example/artifact-provenance-verifier/internal/attestation/application"
@@ -230,13 +229,13 @@ func writeErr(w http.ResponseWriter, code int, e error) {
 	writeJSON(w, code, map[string]any{"error": e.Error()})
 }
 func status(e error) int {
-	if errors.Is(e, platform.ErrNotFound) {
+	if platform.IsNotFound(e) {
 		return 404
 	}
-	if errors.Is(e, platform.ErrConflict) || errors.Is(e, platform.ErrDuplicate) {
+	if platform.IsConflict(e) || platform.IsDuplicate(e) {
 		return 409
 	}
-	if errors.Is(e, platform.ErrUnauthorized) {
+	if platform.IsUnauthorized(e) {
 		return 401
 	}
 	if strings.Contains(strings.ToLower(e.Error()), "required") || strings.Contains(strings.ToLower(e.Error()), "invalid") {
